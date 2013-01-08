@@ -1,22 +1,9 @@
-var oldChromeVersion = !chrome.runtime;
 var apiKey = null; // ENTER API KEY HERE
 var url = 'https://www.googleapis.com/language/translate/v2?target=en&key=' + apiKey + '&q=';
 
-if (oldChromeVersion) {
-  console.log('detected: old chrome version');
-  onInit();
-} else {
-  console.log('detected: new chrome version');
-  chrome.runtime.onInstalled.addListener(onInit);
-}
+console.log('Background worker running.');
 
-
-function onInit(){
-    console.log('Background worker running.')
-}
-
-
-function translateText(text, tweetId) {
+function translateText(text, tweetId, sendResponse) {
     
     if (apiKey === null) {
         alert("You must provide your own Google API Key to call the Google Translate Service.");
@@ -28,11 +15,19 @@ function translateText(text, tweetId) {
     request.open("GET", source, true);
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
-            var obj = eval("(" + request.responseText + ")");  // change this to JSON.parse
+            var obj = JSON.parse(request.responseText);
             var translatedTweetText = obj.data.translations[0].translatedText;
-            
-           // Send message back to front-end
+            console.log('Returning ' + translatedTweetText + ' to sender');
+            sendResponse({tweetId: tweetId, translatedText: translatedTweetText});
         }
     };
     request.send(null);
 }
+
+
+chrome.extension.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log('Recieved ' + request.tweetText + ' from ' + request.tweetId);
+    translateText(request.tweetText, request.tweetId, sendResponse)
+    return true;
+  });

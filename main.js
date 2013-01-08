@@ -13,7 +13,7 @@ Object.defineProperty(Tweet, "translatedText", {
 Object.defineProperties(Tweet.prototype, {
     isTranslated: {
         value: function isTranslated() {
-            return this.translatedText !== null;
+            return this.translatedText !== undefined;
         }
     }
 });
@@ -76,7 +76,7 @@ function translateTweetText(evt) {
         console.log("api lookup...");
         var tweetText = getTweetText(tweetId);
         // translateText(tweetText, tweetId);
-        // TODO: Send tweet message request
+        chrome.extension.sendMessage({tweetText: tweetText, tweetId: tweetId}, handleTranslationCallback);
     }
     
 }
@@ -109,7 +109,7 @@ function setTweetText(tweetId, text) {
 
 function handleTranslationCallback(message){
     var tweetId = message.tweetId;  
-    var translatedTweetText = message.translatedTweetText;  
+    var translatedTweetText = message.translatedText;  
     
     var tweet = lookup[tweetId];
     tweet.translatedText = translatedTweetText;

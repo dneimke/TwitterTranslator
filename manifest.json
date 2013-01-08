@@ -13,5 +13,5 @@
   "background": {
     "scripts": ["background.js"]
   },
-  "permissions": [ "tabs", "*://*.google.com/" ]
+  "permissions": [ "tabs", "*://*.googleapis.com/" ]
 }
