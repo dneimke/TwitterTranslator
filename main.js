@@ -18,14 +18,33 @@ Object.defineProperties(Tweet.prototype, {
     }
 });
 
-
-var ulListNodes = Array.prototype.slice.call(document.getElementsByClassName('js-actions'));
+var LIST_QUERY = '#timeline';
+var listTarget = document.querySelector(LIST_QUERY);
 var lookup = [];
 
+var observer = new MutationSummary({
+  rootNode: listTarget,
+  callback: handleDomChanges,
+  queries: [{ element: '.js-actions' }]
+});
 
-for (var i = 0; i <= ulListNodes.length - 1; i++) {
-    var ul = ulListNodes[i];
-    appendTranslateNode(ul);
+onInit();
+
+function onInit() {
+    var ulListNodes = Array.prototype.slice.call(document.getElementsByClassName('js-actions'));
+
+    for (var i = 0; i <= ulListNodes.length - 1; i++) {
+        var ul = ulListNodes[i];
+        appendTranslateNode(ul);
+    }
+}
+
+function handleDomChanges(summaries) {
+  var summary = summaries[0];
+
+  summary.added.forEach(function(ul) {
+    appendTranslateNode(ul)
+  });
 }
 
 function appendTranslateNode(ul) {

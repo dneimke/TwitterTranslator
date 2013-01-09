@@ -5,8 +5,8 @@
   "description": "Translate tweets in your Twitter feed.",
   "content_scripts": [
     {
-		"matches": ["*://*.twitter.com/"],
-		"js": ["main.js"],
+    	"matches": ["*://*.twitter.com/"],
+		"js": ["mutation_summary.js","main.js"],
 		"run_at": "document_idle"
 	}
 	],
