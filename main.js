@@ -94,9 +94,10 @@ function translateTweetText(evt) {
     } else {
         console.log("api lookup...");
         var tweetText = getTweetText(tweetId);
-        // translateText(tweetText, tweetId);
         chrome.extension.sendMessage({tweetText: tweetText, tweetId: tweetId}, handleTranslationCallback);
     }
+    evt.preventDefault();
+    evt.stopPropagation();
     
 }
 
@@ -111,6 +112,8 @@ function revertTweetText(evt) {
     setTweetText(tweetId, tweet.originalText);
     document.getElementById('translate_' + tweetId).style.display = ''; 
     document.getElementById('revert_' + tweetId).style.display = 'none';
+    evt.preventDefault();
+    evt.stopPropagation();
 }
 
 function getTweetText(tweetId) {
